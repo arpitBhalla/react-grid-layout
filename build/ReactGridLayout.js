@@ -66,6 +66,7 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
     _this = _super.call.apply(_super, [this].concat(args));
     _defineProperty(_assertThisInitialized(_this), "state", {
       activeDrag: null,
+      activePlaceholderType: undefined,
       layout: (0, _utils.synchronizeLayoutWithChildren)(_this.props.layout, _this.props.children, _this.props.cols,
       // Legacy support for verticalCompact: false
       (0, _utils.compactType)(_this.props), _this.props.allowOverlap),
@@ -107,7 +108,7 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
      */
     _defineProperty(_assertThisInitialized(_this), "onDrag", function (i, x, y, _ref2,
     // original X
-    ox) {
+    ox, oy) {
       var e = _ref2.e,
         node = _ref2.node;
       var oldDragItem = _this.state.oldDragItem;
@@ -131,11 +132,12 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
 
       // Move the element to the dragged location.
       var isUserAction = true;
-      layout = (0, _utils.moveElement)(layout, l, x, y, isUserAction, preventCollision, (0, _utils.compactType)(_this.props), cols, allowOverlap, ox, oldDragItem);
+      layout = (0, _utils.moveElement)(layout, l, x, y, isUserAction, preventCollision, (0, _utils.compactType)(_this.props), cols, allowOverlap, ox, oy, oldDragItem);
       _this.props.onDrag(layout, oldDragItem, l, placeholder, e, node);
       _this.setState({
         layout: allowOverlap ? layout : (0, _utils.compact)(layout, (0, _utils.compactType)(_this.props), cols),
-        activeDrag: placeholder
+        activeDrag: placeholder,
+        activePlaceholderType: "drag"
       });
     });
     /**
@@ -251,7 +253,8 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
       // Re-compact the newLayout and set the drag placeholder.
       _this.setState({
         layout: allowOverlap ? newLayout : (0, _utils.compact)(newLayout, (0, _utils.compactType)(_this.props), cols),
-        activeDrag: placeholder
+        activeDrag: placeholder,
+        activePlaceholderType: "resize"
       });
     });
     _defineProperty(_assertThisInitialized(_this), "onResizeStop", function (i, w, h, _ref6) {
@@ -368,6 +371,7 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
         layout: newLayout,
         droppingDOMNode: null,
         activeDrag: null,
+        activePlaceholderType: undefined,
         droppingPosition: undefined
       });
     });
@@ -464,7 +468,9 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
      * @return {Element} Placeholder div.
      */
     function placeholder() /*: ?ReactElement<any>*/{
-      var activeDrag = this.state.activeDrag;
+      var _this$state3 = this.state,
+        activeDrag = _this$state3.activeDrag,
+        activePlaceholderType = _this$state3.activePlaceholderType;
       if (!activeDrag) return null;
       var _this$props7 = this.props,
         width = _this$props7.width,
@@ -495,7 +501,7 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
         isBounded: false,
         useCSSTransforms: useCSSTransforms,
         transformScale: transformScale
-      }, /*#__PURE__*/React.createElement("div", null));
+      }, /*#__PURE__*/React.createElement("div", null, activePlaceholderType === "resize" ? this.props.resizePlaceholder : this.props.dragPlaceholder));
     }
 
     /**
@@ -525,9 +531,9 @@ var ReactGridLayout = /*#__PURE__*/function (_React$Component) {
         draggableHandle = _this$props8.draggableHandle,
         resizeHandles = _this$props8.resizeHandles,
         resizeHandle = _this$props8.resizeHandle;
-      var _this$state3 = this.state,
-        mounted = _this$state3.mounted,
-        droppingPosition = _this$state3.droppingPosition;
+      var _this$state4 = this.state,
+        mounted = _this$state4.mounted,
+        droppingPosition = _this$state4.droppingPosition;
 
       // Determine user manipulations possible.
       // If an item is static, it can't be manipulated by default.

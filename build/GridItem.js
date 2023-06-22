@@ -139,13 +139,14 @@ var GridItem = /*#__PURE__*/function (_React$Component) {
       var _calcXY2 = (0, _calculateUtils.calcXY)(positionParams, top, left, w, h),
         x = _calcXY2.x,
         y = _calcXY2.y,
-        ox = _calcXY2.ox;
+        ox = _calcXY2.ox,
+        oy = _calcXY2.oy;
       // console.log({ x, y, ox });
       return onDrag.call(_assertThisInitialized(_this), i, x, y, {
         e: e,
         node: node,
         newPosition: newPosition
-      }, ox);
+      }, ox, oy);
     });
     /**
      * onDragStop event handler

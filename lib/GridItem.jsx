@@ -502,7 +502,7 @@ export default class GridItem extends React.Component<Props, State> {
     this.setState({ dragging: newPosition });
 
     // Call callback with this data
-    const { x, y, ox } = calcXY(positionParams, top, left, w, h);
+    const { x, y, ox, oy } = calcXY(positionParams, top, left, w, h);
     // console.log({ x, y, ox });
     return onDrag.call(
       this,
@@ -514,7 +514,8 @@ export default class GridItem extends React.Component<Props, State> {
         node,
         newPosition
       },
-      ox
+      ox,
+      oy
     );
   };
 

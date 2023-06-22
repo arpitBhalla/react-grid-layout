@@ -120,6 +120,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   state: State = {
     activeDrag: null,
+    activePlaceholderType: undefined,
     layout: synchronizeLayoutWithChildren(
       this.props.layout,
       this.props.children,
@@ -272,7 +273,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     y,
     { e, node },
     // original X
-    ox
+    ox,
+    oy
   ) => {
     const { oldDragItem } = this.state;
     let { layout } = this.state;
@@ -303,6 +305,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       cols,
       allowOverlap,
       ox,
+      oy,
       oldDragItem
     );
 
@@ -312,7 +315,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       layout: allowOverlap
         ? layout
         : compact(layout, compactType(this.props), cols),
-      activeDrag: placeholder
+      activeDrag: placeholder,
+      activePlaceholderType: "drag"
     });
   };
 
@@ -459,7 +463,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       layout: allowOverlap
         ? newLayout
         : compact(newLayout, compactType(this.props), cols),
-      activeDrag: placeholder
+      activeDrag: placeholder,
+      activePlaceholderType: "resize"
     });
   };
 
@@ -496,7 +501,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
    * @return {Element} Placeholder div.
    */
   placeholder(): ?ReactElement<any> {
-    const { activeDrag } = this.state;
+    const { activeDrag, activePlaceholderType } = this.state;
     if (!activeDrag) return null;
     const {
       width,
@@ -530,7 +535,11 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         useCSSTransforms={useCSSTransforms}
         transformScale={transformScale}
       >
-        <div />
+        <div>
+          {activePlaceholderType === "resize"
+            ? this.props.resizePlaceholder
+            : this.props.dragPlaceholder}
+        </div>
       </GridItem>
     );
   }
@@ -727,6 +736,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       layout: newLayout,
       droppingDOMNode: null,
       activeDrag: null,
+      activePlaceholderType: undefined,
       droppingPosition: undefined
     });
   };

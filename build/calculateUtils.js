@@ -104,14 +104,16 @@ function calcXY(positionParams /*: PositionParams*/, top /*: number*/, left /*: 
   var x = Math.round((left - margin[0]) / (colWidth + margin[0]));
   var y = Math.round((top - margin[1]) / (rowHeight + margin[1]));
   // original x without clamping
-  var ox = x;
+  var ox = x,
+    oy = y;
   // Capping
   x = clamp(x, 0, cols - w);
   y = clamp(y, 0, maxRows - h);
   return {
     x: x,
     y: y,
-    ox: ox
+    ox: ox,
+    oy: oy
   };
 }
 

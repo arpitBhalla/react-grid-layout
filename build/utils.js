@@ -33,6 +33,7 @@ exports.validateLayout = validateLayout;
 exports.withLayoutItem = withLayoutItem;
 var _fastEquals = require("fast-equals");
 var _react = _interopRequireDefault(require("react"));
+var _calculateUtils = require("./calculateUtils");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -363,7 +364,7 @@ function getStatics(layout /*: Layout*/) /*: Array<LayoutItem>*/{
  */
 function moveElement(layout /*: Layout*/, l /*: LayoutItem*/, x /*: ?number*/, y /*: ?number*/, isUserAction /*: ?boolean*/, preventCollision /*: ?boolean*/, compactType /*: CompactType*/, cols /*: number*/, allowOverlap /*: ?boolean*/,
 // original x
-ox /*: ?number*/, oldDragItem) /*: Layout*/{
+ox /*: ?number*/, oy /*: ?number*/, oldDragItem) /*: Layout*/{
   // If this is static and not explicitly enabled as draggable,
   // no move is possible, so we can short-circuit this immediately.
   if (l.static && l.isDraggable !== true) return layout;
@@ -373,7 +374,6 @@ ox /*: ?number*/, oldDragItem) /*: Layout*/{
   log("Moving element ".concat(l.i, " to [").concat(String(x), ",").concat(String(y), "] from [").concat(l.x, ",").concat(l.y, "]"));
   var oldX = l.x;
   var oldY = l.y;
-  var oldW = l.w;
 
   // This is quite a bit faster than extending the object
   if (typeof x === "number") l.x = x;
@@ -425,10 +425,9 @@ ox /*: ?number*/, oldDragItem) /*: Layout*/{
       if (ox && l.minW && availableWidth < l.w && availableWidth >= l.minW && l.y === collision.y &&
       // if original 'X' is > collision 'X'
       ox >= offset) {
-        l.w = l.minW || l.w;
-        l.x = offset;
+        l.w = (0, _calculateUtils.clamp)(l.w, l.minW, availableWidth);
       }
-      if (l.y !== collision.y && oldDragItem && oldDragItem.w !== l.w) {
+      if ((oy !== collision.y || ox < offset) && oldDragItem && (oldDragItem === null || oldDragItem === void 0 ? void 0 : oldDragItem.w) !== l.w) {
         l.w = oldDragItem.w;
       }
       layout = moveElementAwayFromCollision(layout, l, collision, isUserAction, compactType, cols);
