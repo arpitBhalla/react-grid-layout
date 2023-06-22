@@ -270,7 +270,9 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     i,
     x,
     y,
-    { e, node }
+    { e, node },
+    // original X
+    ox
   ) => {
     const { oldDragItem } = this.state;
     let { layout } = this.state;
@@ -299,7 +301,9 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       preventCollision,
       compactType(this.props),
       cols,
-      allowOverlap
+      allowOverlap,
+      ox,
+      oldDragItem
     );
 
     this.props.onDrag(layout, oldDragItem, l, placeholder, e, node);

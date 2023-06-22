@@ -502,12 +502,20 @@ export default class GridItem extends React.Component<Props, State> {
     this.setState({ dragging: newPosition });
 
     // Call callback with this data
-    const { x, y } = calcXY(positionParams, top, left, w, h);
-    return onDrag.call(this, i, x, y, {
-      e,
-      node,
-      newPosition
-    });
+    const { x, y, ox } = calcXY(positionParams, top, left, w, h);
+    // console.log({ x, y, ox });
+    return onDrag.call(
+      this,
+      i,
+      x,
+      y,
+      {
+        e,
+        node,
+        newPosition
+      },
+      ox
+    );
   };
 
   /**
