@@ -408,6 +408,10 @@ ox /*: ?number*/, oy /*: ?number*/, oldDragItem) /*: Layout*/{
     return layout; // did not change so don't clone
   }
 
+  if (!collisions.length && (oldDragItem === null || oldDragItem === void 0 ? void 0 : oldDragItem.w) !== l.w) {
+    l.w = oldDragItem.w;
+  }
+
   // Move each item that collides away from this element.
   for (var i = 0, len = collisions.length; i < len; i++) {
     var collision = collisions[i];
@@ -425,7 +429,7 @@ ox /*: ?number*/, oy /*: ?number*/, oldDragItem) /*: Layout*/{
       if (ox && l.minW && availableWidth < l.w && availableWidth >= l.minW && l.y === collision.y &&
       // if original 'X' is > collision 'X'
       ox >= offset) {
-        l.w = (0, _calculateUtils.clamp)(l.w, l.minW, availableWidth);
+        l.w = Math.min(l.minW, availableWidth);
       }
       if ((oy !== collision.y || ox < offset) && oldDragItem && (oldDragItem === null || oldDragItem === void 0 ? void 0 : oldDragItem.w) !== l.w) {
         l.w = oldDragItem.w;
