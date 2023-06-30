@@ -408,7 +408,7 @@ ox /*: ?number*/, oy /*: ?number*/, oldDragItem) /*: Layout*/{
     return layout; // did not change so don't clone
   }
 
-  if (!collisions.length && (oldDragItem === null || oldDragItem === void 0 ? void 0 : oldDragItem.w) !== l.w) {
+  if (!collisions.length && (oldDragItem === null || oldDragItem === void 0 ? void 0 : oldDragItem.w) !== (l === null || l === void 0 ? void 0 : l.w)) {
     l.w = oldDragItem.w;
   }
 
